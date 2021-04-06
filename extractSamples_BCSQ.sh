@@ -7,6 +7,6 @@
 
 module purge all
 
-module load bcftools/1.10.1 
+conda activate bcftools1_12
 
-bcftools view -e 'INFO/BCSQ="."' -Ou /projects/b1059/projects/Ryan/csq/GitreanWI.20210121.hard-filter.isotype.bcsq.vcf.gz | bcftools query -i 'GT ="alt"' -f'%CHROM\t%POS\t%REF\t%ALT\t[%SAMPLE:%TBCSQ{*}=]\n' > /projects/b1059/projects/Sophie/csq/re-an_strain_BCSQ.tsv
+bcftools view -e 'INFO/BCSQ="."' -Ou /projects/b1059/analysis/WI-20210121/isotype_only/WI.20210121.hard-filter.isotype.bcsq.20210401.vcf.gz  | bcftools query -i 'GT ="alt"' -f'%CHROM\t%POS\t%REF\t%ALT\t[%SAMPLE:%TBCSQ{*}=]\n' > /projects/b1059/projects/Ryan/csq/flat_file/WI.20210121.hard-filter.isotype.bcsq.20210401_strain_bcsq.tsv
