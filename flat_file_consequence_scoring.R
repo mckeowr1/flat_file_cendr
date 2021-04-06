@@ -136,7 +136,7 @@ impact_numeric <- function(x) {
 
 }
 impact_numeric_tocharacter <- function(x){
-  dplyr::ecode(x,
+  dplyr::recode(x,
          "4"="HIGH",
          '3'="HIGH",
          "2"="LOW",
@@ -144,7 +144,7 @@ impact_numeric_tocharacter <- function(x){
 }
 
 
-data <-data.table::fread("WI.20210121.strain.annotation-GB-gene.tsv")
+data <-data.table::fread("~/projects/b1059/projects/Ryan/csq/flat_file/WI.20210121.hard-filter.isotype.bcsq.20210401.pre.flatfile-gene.tsv")
 
 
 
@@ -159,4 +159,4 @@ impacted$VARIANT_IMPACT = if_else(impacted$linker == TRUE, "Linker", impacted$VA
 table_ready <- impacted %>%
   dplyr::select(-c(linker, CON1, CON2, CON3))
 
-data.table::fwrite(table_ready, "WI.20210121.strain.annotation-GB-gene-impact.tsv")
+data.table::fwrite(table_ready, "~/projects/b1059/projects/Ryan/csq/flat_file/WI.20210121.hard-filter.isotype.bcsq.20210401.pre.flatfile-gene-impact.tsv")
