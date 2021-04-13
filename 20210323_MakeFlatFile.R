@@ -2,6 +2,9 @@ library(dplyr)
 library(tidyr)
 library(data.table)
 library(readr)
+library(hablar)
+
+#Requires at least 32 GB mem in slurm script runs for >2hrs
 
 #Reformat table
 parse_strain <- function(df){
@@ -15,7 +18,7 @@ parse_strain <- function(df){
     dplyr::summarise(Strains = paste(Strain, collapse = ","))
 }
 
-sample_BCSQ <- data.table::fread("~/projects/b1059/projects/Sophie/csq/re-an_strain_BCSQ.tsv")
+sample_BCSQ <- data.table::fread("~/projects/b1059/projects/Ryan/csq/flat_file/WI.20210121.hard-filter.isotype.bcsq.20210401_strain_bcsq.tsv")
 
 sample_parsed <- parse_strain(sample_BCSQ)
 
@@ -32,17 +35,17 @@ strain_variant_score <- strain_variant_score %>%
 #Remove non-single AA substitutions. Make columns integers
 clean_flat_file <- function(df){
   clean_flat_file <- df %>%
-    dplyr::mutate(BLOSUM = ifelse(CONSEQUENCE != "missense" & CONSEQUENCE !="*missense" & 
+    dplyr::mutate(BLOSUM = ifelse(CONSEQUENCE != "missense" & CONSEQUENCE !="*missense" &
                                     CONSEQUENCE != "stop_gained" & CONSEQUENCE !="*stop_gained" & CONSEQUENCE !="start_lost&splice_region", NA, BLOSUM)) %>%
-    dplyr::mutate(Grantham = ifelse(CONSEQUENCE != "missense" & CONSEQUENCE !="*missense" & 
+    dplyr::mutate(Grantham = ifelse(CONSEQUENCE != "missense" & CONSEQUENCE !="*missense" &
                                       CONSEQUENCE != "stop_gained" & CONSEQUENCE !="*stop_gained" & CONSEQUENCE !="start_lost&splice_region", NA, Grantham)) %>%
-    dplyr::mutate(Grantham = sapply(clean_flat_file$Grantham, as.integer)) %>% 
-    dplyr::mutate(BLOSUM = sapply(clean_flat_file$BLOSUM, as.integer)) %>%
-    dplyr::mutate(Percent_Protein = sapply(clean_flat_file$Percent_Protein, as.integer))
+                                      hablar::convert(num(BLOSUM, Grantham, Percent_Protein)) #Replace with hablar conversion to numeric
+    #dplyr::mutate(Grantham = sapply(clean_flat_file$Grantham, as.integer)) %>%
+    #dplyr::mutate(BLOSUM = sapply(clean_flat_file$BLOSUM, as.integer)) %>%
+    #dplyr::mutate(Percent_Protein = sapply(clean_flat_file$Percent_Protein, as.integer))
 }
 
 cleaned_flat_file <- clean_flat_file(strain_variant_score)
-  
 
-readr::write_tsv(cleaned_flat_file, "~/projects/b1059/projects/Sophie/csq/strain_variant_table.tsv")
 
+readr::write_tsv(cleaned_flat_file, "~/projects/b1059/projects/Ryan/csq/flat_file/WI.20210121.hard-filter.isotype.bcsq.20210401.pre.flatfile.tsv")
